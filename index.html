@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电商交易模式闯关挑战</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #a8edea 100%);
+            min-height: 100vh;
+            padding: 20px;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+            border: 5px solid #fff;
+            position: relative;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, #ff416c, #ff4b2b, #feb47b, #283c86, #45a247);
+        }
+
+        .header {
+            background: linear-gradient(90deg, #ff416c, #ff4b2b);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.2;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stage {
+            padding: 35px;
+            border-bottom: 5px solid #f9f9f9;
+            background: linear-gradient(to right, #f9f9f9 0%, #ffffff 100%);
+        }
+
+        .stage:nth-child(odd) {
+            background: linear-gradient(to right, #ffffff 0%, #f9f9f9 100%);
+        }
+
+        .stage-title {
+            color: #2d3436;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .stage-title::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 100%;
+            background: linear-gradient(180deg, #ff416c, #ff4b2b);
+            border-radius: 4px;
+        }
+
+        .stage-title span {
+            display: inline-block;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 45px;
+            margin-right: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(255,65,108,0.3);
+        }
+
+        .question {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 8px solid #283c86;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .question:hover {
+            transform: translateY(-5px);
+        }
+
+        .question-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #2d3436;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 3px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .option:hover::before {
+            left: 100%;
+        }
+
+        .option:hover {
+            border-color: #48dbfb;
+            background: #f0f8fb;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+            box-shadow: 0 4px 12px rgba(255,107,107,0.2);
+        }
+
+        .option.correct {
+            border-color: #2ecc71;
+            background: #f0fff4;
+            box-shadow: 0 4px 12px rgba(46,204,113,0.2);
+        }
+
+        .option.incorrect {
+            border-color: #e74c3c;
+            background: #ffebee;
+            box-shadow: 0 4px 12px rgba(231,76,60,0.2);
+        }
+
+        .judge-option {
+            display: flex;
+            gap: 25px;
+            margin-top: 15px;
+        }
+
+        .judge-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .true-btn {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .false-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .judge-btn.selected {
+            transform: scale(1.08);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        .textarea-container {
+            margin-top: 20px;
+        }
+
+        .answer-text {
+            width: 100%;
+            height: 180px;
+            padding: 20px;
+            border: 3px solid #e9ecef;
+            border-radius: 15px;
+            resize: vertical;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .answer-text:focus {
+            outline: none;
+            border-color: #48dbfb;
+            box-shadow: 0 0 0 5px rgba(72,219,251,0.1);
+        }
+
+        .reference-answer {
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #e8f4f8, #f0f8fb);
+            border-radius: 15px;
+            display: none;
+            border-left: 8px solid #2980b9;
+        }
+
+        .reference-answer h4 {
+            color: #2980b9;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .reference-answer p {
+            line-height: 1.8;
+            color: #2c3e50;
+            font-size: 1.05rem;
+        }
+
+        .analysis {
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #fff8e1, #fff3cd);
+            border-radius: 15px;
+            display: none;
+            border-left: 8px solid #f39c12;
+        }
+
+        .analysis h4 {
+            color: #f39c12;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .analysis p {
+            line-height: 1.8;
+            color: #2c3e50;
+            font-size: 1.05rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                rgba(255,255,255,0.1) 0%,
+                rgba(255,255,255,0.1) 50%,
+                rgba(255,255,255,0.2) 50%,
+                rgba(255,255,255,0.2) 100%
+            );
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .btn:hover::before {
+            transform: translateX(100%);
+        }
+
+        .check-btn {
+            background: linear-gradient(135deg, #4ecdc4, #45b7aa);
+            color: white;
+        }
+
+        .show-ref-btn {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .submit-sq-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .result {
+            margin-top: 40px;
+            padding: 35px;
+            background: linear-gradient(90deg, #74b9ff, #0984e3);
+            color: white;
+            border-radius: 25px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            border: 5px solid white;
+        }
+
+        .result h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .score {
+            font-size: 4rem;
+            font-weight: bold;
+            margin: 25px 0;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            display: inline-block;
+            min-width: 200px;
+        }
+
+        .evaluation {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            line-height: 1.6;
+        }
+
+        .total-score-btn {
+            background: linear-gradient(135deg, #feca57, #ff9f43);
+            color: #2c3e50;
+            padding: 18px 35px;
+            font-size: 1.3rem;
+            margin-top: 25px;
+            border-radius: 15px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .total-score-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        /* 闯关进度样式 */
+        .progress-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff416c, #ff4b2b);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 6px;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            .stage-title {
+                font-size: 1.6rem;
+            }
+            .score {
+                font-size: 3rem;
+            }
+            .btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 闯关进度条 -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">闯关进度：0/12 题</div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🎮 电商交易模式闯关挑战</h1>
+            <p>测一测你对B2B/B2C/C2C/O2O的掌握程度吧！</p>
+        </div>
+
+        <!-- 第一关：单选题 -->
+        <div class="stage" id="stage1">
+            <div class="stage-title">
+                <span>1</span>
+                <h2>基础试炼 · 单选题（每题5分，共6题）</h2>
+            </div>
+
+            <!-- 单选题1 -->
+            <div class="question" id="q1">
+                <div class="question-title">1. 下列哪种交易模式是企业与企业之间通过互联网进行产品、服务及信息交易的商务模式？</div>
+                <div class="options">
+                    <div class="option" data-answer="false">A. B2C</div>
+                    <div class="option" data-answer="true">B. B2B</div>
+                    <div class="option" data-answer="false">C. C2C</div>
+                    <div class="option" data-answer="false">D. O2O</div>
+                </div>
+                <div class="analysis">
+                    <h4>答案解析：</h4>
+                    <p>B2B（Business-to-Business）即企业对企业的电子商务，指企业之间通过互联网进行产品、服务和信息的交易；B2C是企业对消费者；C2C是消费者对消费者；O2O是线上到线下。</p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn check-btn" onclick="checkSingleAnswer(1)">提交答案</button>
+                    <button class="btn reset-btn" onclick="resetSingleOption(1)">重新选择</button>
+                </div>
+            </div>
+
+            <!-- 单选题2 -->
+            <div class="question" id="q2">
+                <div class="question-title">2. 消费者通过天猫平台购买品牌服装，这种交易模式属于？</div>
+                <div class="options">
+                    <div class="option" data-answer="false">A. B2B</div>
+                    <div class="option" data-answer="false">B. C2C</div>
+                    <div class="option" data-answer="true">C. B2C</div>
+                    <div class="option" data-answer="false">D. O2O</div>
+                </div>
+                <div class="analysis">
+                    <h4>答案解析：</h4>
+                    <p>天猫平台的商家主要是企业/品牌方，消费者是个人，企业直接向消费者销售商品，属于B2C（Business-to-Consumer）模式。</p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn check-btn" onclick="checkSingleAnswer(2)">提交答案</button>
+                    <button class="btn reset-btn" onclick="resetSingleOption(2)">重新选择</button>
+                </div>
+            </div>
+
+            <!-- 单选题3 -->
+            <div class="question" id="q3">
+                <div class="question-title">3. 下列平台中，主要采用C2C交易模式的是？</div>
+                <div class="options">
+                    <div class="option" data-answer="false">A. 阿里巴巴</div>
+                    <div class="option" data-answer="false">B. 京东</div>
+                    <div class="option" data-answer="true">C. 闲鱼</div>
+                    <div class="option" data-answer="false">D. 美团</div>
+                </div>
+                <div class="analysis">
+                    <h4>答案解析：</h4>
+                    <p>闲鱼是个人之间进行二手商品交易的平台，属于C2C（Consumer-to-Consumer）模式；阿里巴巴主要是B2B，京东主要是B2C，美团主要是O2O。</p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn check-btn" onclick="checkSingleAnswer(3)">提交答案</button>
+                    <button class="btn reset-btn" onclick="resetSingleOption(3)">重新选择</button>
+                </div>
+            </div>
+
+            <!-- 单选题4 -->
+            <div class="question" id="q4">
+                <div class="question-title">4. O2O交易模式的核心特点是？</div>
+                <div class="options">
+                    <div class="option" data-answer="false">A. 企业对企业的线上交易</div>
+                    <div class="option" data-answer="true">B. 线上引流，线下消费</div>
+                    <div class="option" data-answer="false">C. 消费者对消费者的直接交易</div>
+                    <div class="option" data-answer="false">D. 企业对消费者的线上直销</div>
+                </div>
+                <div class="analysis">
+                    <h4>答案解析：</h4>
+                    <p>O2O（Online-to-Offline）即线上到线下，核心是通过线上平台吸引用户，引导用户到线下实体门店完成消费体验。</p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn check-btn" onclick="checkSingleAnswer(4)">提交答案</button>
+                    <button class="btn reset-btn" onclick="resetSingleOption(4)">重新选择</button>
+                </div>
+            </div>
+
+            <!-- 单选题5 -->
+            <div class="question" id="q5">
+                <div class="question-title">5. 某家具厂通过电商平台向装修公司批量销售家具，这种交易属于？</div>
+                <div class="options">
+                    <div class="option" data-answer="true">A. B2B</div>
+                    <div class="option" data-answer="false">B. B2C</div>
+                    <div class="option" data-answer="false">C. C2C</div>
+                    <div class="option" data-answer="false">D. O2O</div>
+                </div>
+                <div class="analysis">
+                    <h4>答案解析：</h4>
+                    <p>家具厂（企业）向装修公司（企业）销售产品，属于企业对企业的交易，即B2B模式。</p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn check-btn" onclick="checkSingleAnswer(5)">提交答案</button>
+                    <button class="btn reset-btn" onclick="resetSingleOption(5)">重新选择</button>
+                </div>
+            </div>
+
+            <!-- 单选题6 -->
+            <div class="question" id="q6">
+                <div class="question-title">6. 下列关于B2C模式的描述，错误的是？</div>
+                <div class="options">
+                    <div class="option" data-answer="false">A. 交易主体是企业和消费者</div>
+                    <div class="option" data-answer="false">B. 常见形式包括网络商城、品牌官网</div>
+                    <div class="option" data-answer="true">C. 交易金额通常较大</div>
+                    <div class="option" data-answer="false">D. 注重消费者的购物体验</div>
+                </div>
+                <div class="analysis">
+                    <h4>答案解析：</h4>
+                    <p>B2C模式是企业面向个人消费者，单笔交易金额通常较小；B2B模式因企业批量采购，交易金额通常较大。</p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn check-btn" onclick="checkSingleAnswer(6)">提交答案</button>
+                    <button class="btn reset-btn" onclick="resetSingleOption(6)">重新选择</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第二关：判断题 -->
+        <div class="stage" id="stage2">
+            <div class="stage-title">
+                <span>2</span>
+                <h2>进阶挑战 · 判断题（每题10分，共4题）</h2>
+            </div>
+
+            <!-- 判断题1 -->
+            <div class="question" id="jq1">
+                <div class="question-title">16. B2C模式中，企业直接面向消费者销售商品，不需要中间环节。</div>
+                <div class="judge-option">
+                    <button class="judge-btn true-btn" onclick="selectJudgeAnswer('jq1', 'true')">√ 正确</button>
+                    <button class="judge-btn false-btn" onclick="selectJudgeAnswer('jq1', 'false')">× 错误</button>
+                </div>
+                <div class="analysis">
+                    <h4>答案解析：</h4>
+                    <p>正确（√）。B2C（企业对消费者）的核心就是企业直接对接终端消费者，省去了经销商、代理商等中间环节，降低流通成本。</p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn check-btn" onclick="checkJudgeAnswer('jq1', 'true')">提交答案</button>
+                    <button class="btn reset-btn" onclick="resetJudgeOption('jq1')">重新选择</button>
+                </div>
+            </div>
+
+            <!-- 判断题2 -->
+            <div class="question" id="jq2">
+                <div class="question-title">17. C2C模式的交易主体都是个人，企业不能参与其中。</div>
+                <div class="judge-option">
+                    <button class="judge-btn true-btn" onclick="selectJudgeAnswer('jq2', 'true')">√ 正确</button>
+                    <button class="judge-btn false-btn" onclick="selectJudgeAnswer('jq2', 'false')">× 错误</button>
+                </div>
+                <div class="analysis">
+                    <h4>答案解析：</h4>
+                    <p>错误（×）。虽然C2C核心是个人对个人，但部分平台允许小微企业/个体工商户以个人身份参与交易，并非绝对禁止企业参与。</p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn check-btn" onclick="checkJudgeAnswer('jq2', 'false')">提交答案</button>
+                    <button class="btn reset-btn" onclick="resetJudgeOption('jq2')">重新选择</button>
+                </div>
+            </div>
+
+            <!-- 判断题3 -->
+            <div class="question" id="jq3">
+                <div class="question-title">18. O2O模式的核心是将线下的实体资源与线上的流量相结合。</div>
+                <div class="judge-option">
+                    <button class="judge-btn true-btn" onclick="selectJudgeAnswer('jq3', 'true')">√ 正确</button>
+                    <button class="judge-btn false-btn" onclick="selectJudgeAnswer('jq3', 'false')">× 错误</button>
+                </div>
+                <div class="analysis">
+                    <h4>答案解析：</h4>
+                    <p>正确（√）。O2O的本质就是通过线上平台获取流量、完成交易预约/支付，再引导用户到线下实体享受服务，实现线上线下资源融合。</p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn check-btn" onclick="checkJudgeAnswer('jq3', 'true')">提交答案</button>
+                    <button class="btn reset-btn" onclick="resetJudgeOption('jq3')">重新选择</button>
+                </div>
+            </div>
+
+            <!-- 判断题4 -->
+            <div class="question" id="jq4">
+                <div class="question-title">19. 阿里巴巴平台主要采用B2C的交易模式。</div>
+                <div class="judge-option">
+                    <button class="judge-btn true-btn" onclick="selectJudgeAnswer('jq4', 'true')">√ 正确</button>
+                    <button class="judge-btn false-btn" onclick="selectJudgeAnswer('jq4', 'false')">× 错误</button>
+                </div>
+                <div class="analysis">
+                    <h4>答案解析：</h4>
+                    <p>错误（×）。阿里巴巴（1688.com）核心是B2B模式，服务于企业间的批发交易；天猫是阿里旗下的B2C平台，淘宝是C2C平台。</p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn check-btn" onclick="checkJudgeAnswer('jq4', 'false')">提交答案</button>
+                    <button class="btn reset-btn" onclick="resetJudgeOption('jq4')">重新选择</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第三关：简答题 -->
+        <div class="stage" id="stage3">
+            <div class="stage-title">
+                <span>3</span>
+                <h2>终极对决 · 简答题（每题20分，共2题）</h2>
+            </div>
+
+            <!-- 简答题1 -->
+            <div class="question" id="sq1">
+                <div class="question-title">26. 请分别简述B2B、B2C、C2C、O2O四种电子商务交易模式的核心定义，并各举一个典型应用案例。</div>
+                <div class="textarea-container">
+                    <textarea class="answer-text" id="sq1-text" placeholder="请在此输入你的答案..."></textarea>
+                </div>
+                <div class="reference-answer" id="ref1">
+                    <h4>参考答案：</h4>
+                    <p>1. B2B（企业对企业）：企业之间通过互联网进行产品、服务和信息交易的模式。案例：阿里巴巴1688、慧聪网。<br>
+                    2. B2C（企业对消费者）：企业直接面向个人消费者销售商品/服务的模式。案例：京东自营、天猫、苏宁易购。<br>
+                    3. C2C（消费者对消费者）：个人与个人之间通过平台进行商品交易的模式。案例：淘宝、闲鱼、转转。<br>
+                    4. O2O（线上到线下）：线上引流、线下消费的模式，线上完成预约/支付，线下享受服务。案例：美团外卖、滴滴出行、星巴克线上点单到店取餐。</p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn submit-sq-btn" onclick="submitShortAnswer('sq1')">提交答案</button>
+                    <button class="btn show-ref-btn" onclick="toggleReference('ref1')" disabled>查看参考答案</button>
+                </div>
+            </div>
+
+            <!-- 简答题2 -->
+            <div class="question" id="sq2">
+                <div class="question-title">27. 对比分析B2C模式与O2O模式的异同点，并说明O2O模式在提升消费者体验方面有哪些优势。</div>
+                <div class="textarea-container">
+                    <textarea class="answer-text" id="sq2-text" placeholder="请在此输入你的答案..."></textarea>
+                </div>
+                <div class="reference-answer" id="ref2">
+                    <h4>参考答案：</h4>
+                    <p><strong>相同点</strong>：<br>
+                    1. 交易主体均包含企业和消费者；<br>
+                    2. 都依赖互联网平台完成交易环节；<br>
+                    3. 核心都是满足消费者的购物/服务需求。<br>
+                    <strong>不同点</strong>：<br>
+                    1. 交付形式：B2C以实物商品快递配送为主；O2O以线下服务/到店消费为主；<br>
+                    2. 消费场景：B2C纯线上完成交易和支付，消费体验在线下（收到商品后）；O2O线上支付/预约，线下体验服务；<br>
+                    3. 商品类型：B2C以实物商品为主；O2O以服务类（餐饮、出行、娱乐）为主。<br>
+                    <strong>O2O提升体验的优势</strong>：<br>
+                    1. 即时性：可快速享受线下服务（如外卖30分钟送达、打车即时接单）；<br>
+                    2. 体验感：线下实体服务能提供触觉、味觉等线上无法实现的体验；<br>
+                    3. 灵活性：支持到店自提、预约服务等个性化选择；<br>
+                    4. 本地化：能对接周边线下资源，满足即时性的本地生活需求。</p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn submit-sq-btn" onclick="submitShortAnswer('sq2')">提交答案</button>
+                    <button class="btn show-ref-btn" onclick="toggleReference('ref2')" disabled>查看参考答案</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果展示区 -->
+        <div class="result" id="result">
+            <h2>🎉 闯关完成！你的成绩来啦</h2>
+            <div class="score" id="totalScore">0</div>
+            <div class="evaluation" id="evaluation">
+                继续加油，你离掌握电商交易模式还差一点点！
+            </div>
+            <button class="btn total-score-btn" onclick="resetAll()">重新闯关</button>
+        </div>
+
+        <!-- 总分计算按钮 -->
+        <div style="text-align: center; padding: 40px;">
+            <button class="btn total-score-btn" onclick="calculateTotalScore()">📊 计算总分 & 查看评定</button>
+        </div>
+    </div>
+
+    <script>
+        // 存储得分
+        let score = 0;
+        // 记录各题是否答对
+        const answerStatus = {
+            q1: false, q2: false, q3: false, q4: false, q5: false, q6: false,
+            jq1: false, jq2: false, jq3: false, jq4: false,
+            sq1: false, sq2: false // 新增简答题状态
+        };
+        // 记录已完成题目数
+        let completedQuestions = 0;
+        // 总题目数
+        const totalQuestions = 12;
+
+        // 更新进度条
+        function updateProgress() {
+            const progressPercent = (completedQuestions / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = `${progressPercent}%`;
+            document.getElementById('progressText').textContent = `闯关进度：${completedQuestions}/${totalQuestions} 题`;
+        }
+
+        // 初始化进度条
+        updateProgress();
+
+        // 单选题选择
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                // 清空同题目的其他选中状态
+                const question = this.closest('.question');
+                question.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                // 添加当前选中状态
+                this.classList.add('selected');
+            });
+        });
+
+        // 检查单选题答案
+        function checkSingleAnswer(questionNum) {
+            const qId = `q${questionNum}`;
+            const question = document.getElementById(qId);
+            const selectedOption = question.querySelector('.option.selected');
+            const correctOption = question.querySelector('.option[data-answer="true"]');
+            
+            // 隐藏之前的解析
+            const analysis = question.querySelector('.analysis');
+            analysis.style.display = 'none';
+
+            if (!selectedOption) {
+                alert('请先选择一个选项！');
+                return;
+            }
+
+            // 标记为已完成
+            if (!answerStatus[qId + '_completed']) {
+                completedQuestions++;
+                answerStatus[qId + '_completed'] = true;
+                updateProgress();
+            }
+
+            // 显示解析
+            analysis.style.display = 'block';
+
+            // 判断对错
+            if (selectedOption.dataset.answer === 'true') {
+                selectedOption.classList.add('correct');
+                answerStatus[qId] = true;
+                alert('回答正确！👍');
+            } else {
+                selectedOption.classList.add('incorrect');
+                correctOption.classList.add('correct');
+                answerStatus[qId] = false;
+                alert('回答错误！👀 看看解析再巩固一下吧');
+            }
+
+            // 禁用当前题目选项
+            question.querySelectorAll('.option').forEach(opt => {
+                opt.style.pointerEvents = 'none';
+            });
+        }
+
+        // 重置单选题选项
+        function resetSingleOption(questionNum) {
+            const qId = `q${questionNum}`;
+            const question = document.getElementById(qId);
+            question.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+                opt.style.pointerEvents = 'auto';
+            });
+            question.querySelector('.analysis').style.display = 'none';
+            
+            // 重置完成状态
+            if (answerStatus[qId + '_completed']) {
+                completedQuestions--;
+                answerStatus[qId + '_completed'] = false;
+                updateProgress();
+            }
+            
+            answerStatus[qId] = false;
+        }
+
+        // 判断题选择
+        function selectJudgeAnswer(jqId, answer) {
+            const question = document.getElementById(jqId);
+            // 清空选中状态
+            question.querySelectorAll('.judge-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            // 添加选中状态
+            if (answer === 'true') {
+                question.querySelector('.true-btn').classList.add('selected');
+            } else {
+                question.querySelector('.false-btn').classList.add('selected');
+            }
+        }
+
+        // 检查判断题答案
+        function checkJudgeAnswer(jqId, correctAnswer) {
+            const question = document.getElementById(jqId);
+            const selectedTrue = question.querySelector('.true-btn').classList.contains('selected');
+            const selectedFalse = question.querySelector('.false-btn').classList.contains('selected');
+            
+            // 隐藏解析
+            const analysis = question.querySelector('.analysis');
+            analysis.style.display = 'none';
+
+            if (!selectedTrue && !selectedFalse) {
+                alert('请先选择“正确”或“错误”！');
+                return;
+            }
+
+            // 标记为已完成
+            if (!answerStatus[jqId + '_completed']) {
+                completedQuestions++;
+                answerStatus[jqId + '_completed'] = true;
+                updateProgress();
+            }
+
+            // 显示解析
+            analysis.style.display = 'block';
+
+            // 判断对错
+            const userAnswer = selectedTrue ? 'true' : 'false';
+            if (userAnswer === correctAnswer) {
+                answerStatus[jqId] = true;
+                alert('回答正确！👍');
+            } else {
+                answerStatus[jqId] = false;
+                alert('回答错误！👀 看看解析再巩固一下吧');
+            }
+
+            // 禁用当前题目按钮
+            question.querySelectorAll('.judge-btn').forEach(btn => {
+                btn.style.pointerEvents = 'none';
+            });
+        }
+
+        // 重置判断题选项
+        function resetJudgeOption(jqId) {
+            const question = document.getElementById(jqId);
+            question.querySelectorAll('.judge-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                btn.style.pointerEvents = 'auto';
+            });
+            question.querySelector('.analysis').style.display = 'none';
+            
+            // 重置完成状态
+            if (answerStatus[jqId + '_completed']) {
+                completedQuestions--;
+                answerStatus[jqId + '_completed'] = false;
+                updateProgress();
+            }
+            
+            answerStatus[jqId] = false;
+        }
+
+        // 提交简答题答案
+        function submitShortAnswer(sqId) {
+            const textArea = document.getElementById(`${sqId}-text`);
+            const showRefBtn = document.querySelector(`#${sqId} .show-ref-btn`);
+            
+            if (!textArea.value.trim()) {
+                alert('请先输入你的答案再提交！');
+                return;
+            }
+
+            // 标记为已完成
+            if (!answerStatus[sqId + '_completed']) {
+                completedQuestions++;
+                answerStatus[sqId + '_completed'] = true;
+                updateProgress();
+            }
+
+            // 标记为已提交
+            answerStatus[sqId] = true;
+            
+            // 启用查看参考答案按钮
+            showRefBtn.disabled = false;
+            showRefBtn.style.opacity = '1';
+            
+            // 禁用文本框和提交按钮
+            textArea.disabled = true;
+            textArea.style.background = '#f8f9fa';
+            document.querySelector(`#${sqId} .submit-sq-btn`).disabled = true;
+            document.querySelector(`#${sqId} .submit-sq-btn`).style.opacity = '0.7';
+            
+            alert('答案提交成功！现在可以查看参考答案了。');
+        }
+
+        // 显示/隐藏参考答案
+        function toggleReference(refId) {
+            const ref = document.getElementById(refId);
+            if (ref.style.display === 'block') {
+                ref.style.display = 'none';
+            } else {
+                ref.style.display = 'block';
+            }
+        }
+
+        // 计算总分（改为100分制）
+        function calculateTotalScore() {
+            // 检查是否所有题目都已完成
+            const allCompleted = completedQuestions === totalQuestions;
+            if (!allCompleted) {
+                if (!confirm(`你还有 ${totalQuestions - completedQuestions} 道题未完成，确定要计算总分吗？`)) {
+                    return;
+                }
+            }
+
+            // 重置分数
+            score = 0;
+
+            // 计算单选题分数（每题5分，共6题，总分30分）
+            for (let i = 1; i <= 6; i++) {
+                if (answerStatus[`q${i}`]) {
+                    score += 5;
+                }
+            }
+
+            // 计算判断题分数（每题10分，共4题，总分40分）
+            for (let i = 1; i <= 4; i++) {
+                if (answerStatus[`jq${i}`]) {
+                    score += 10;
+                }
+            }
+
+            // 计算简答题分数（每题20分，共2题，总分40分，提交即得分）
+            for (let i = 1; i <= 2; i++) {
+                if (answerStatus[`sq${i}`]) {
+                    score += 20;
+                }
+            }
+
+            // 确保分数不超过100
+            score = Math.min(score, 100);
+
+            // 显示结果
+            document.getElementById('totalScore').textContent = `${score}/100`;
+            document.getElementById('result').style.display = 'block';
+
+            // 评定语
+            let evaluation = '';
+            if (score >= 90) {
+                evaluation = '🏆 王者级别！你对电商交易模式的掌握堪称专家级别，太优秀了！';
+            } else if (score >= 80) {
+                evaluation = '🌟 钻石级别！你对电商交易模式的掌握炉火纯青，继续保持！';
+            } else if (score >= 70) {
+                evaluation = '💎 铂金级别！很不错！你已经掌握了大部分知识点，再巩固一下细节就更完美了！';
+            } else if (score >= 60) {
+                evaluation = '🥈 黄金级别！还不错！基础知识点已经掌握，继续加油突破进阶内容！';
+            } else {
+                evaluation = '✊ 青铜级别！别灰心！先把基础概念记牢，多做几遍练习就能进步！';
+            }
+            document.getElementById('evaluation').textContent = evaluation;
+        }
+
+        // 重置所有内容
+        function resetAll() {
+            // 重置分数和状态
+            score = 0;
+            completedQuestions = 0;
+            for (let key in answerStatus) {
+                answerStatus[key] = false;
+            }
+
+            // 更新进度条
+            updateProgress();
+
+            // 重置单选题
+            for (let i = 1; i <= 6; i++) {
+                resetSingleOption(i);
+            }
+
+            // 重置判断题
+            for (let i = 1; i <= 4; i++) {
+                resetJudgeOption(`jq${i}`);
+            }
+
+            // 重置简答题
+            document.querySelectorAll('.answer-text').forEach(text => {
+                text.value = '';
+                text.disabled = false;
+                text.style.background = 'white';
+            });
+            
+            document.querySelectorAll('.submit-sq-btn').forEach(btn => {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            });
+            
+            document.querySelectorAll('.show-ref-btn').forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = '0.7';
+            });
+            
+            document.querySelectorAll('.reference-answer').forEach(ref => {
+                ref.style.display = 'none';
+            });
+
+            // 隐藏结果
+            document.getElementById('result').style.display = 'none';
+        }
+
+        // 初始化禁用简答题查看按钮
+        document.querySelectorAll('.show-ref-btn').forEach(btn => {
+            btn.style.opacity = '0.7';
+        });
+    </script>
+</body>
+</html>
